@@ -1,9 +1,11 @@
 use std::env::Args;
 use std::env;
 
+mod cmd_connection;
+
 fn main() {
     let addr = parse_cmd_args(env::args());
-    connect_server(addr.0, addr.1)
+    cmd_connection::connect_server(addr.0, addr.1)
 }
 
 fn parse_cmd_args(args: Args) -> (String, String) {
@@ -20,8 +22,4 @@ fn parse_cmd_args(args: Args) -> (String, String) {
     };
 
     (host.to_string(), port.to_string())
-}
-
-fn connect_server(host: String, port: String) {
-    println!("Connecting to {}:{}", host, port);
 }
