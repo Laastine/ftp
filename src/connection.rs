@@ -1,56 +1,45 @@
-use std::net::UdpSocket;
-use std::net::SocketAddr;
-use std::thread;
+use std::net::{SocketAddr, TcpStream};
+use std::io::{Read, Write};
+use std::str::from_utf8;
 
-fn read_message(socket: UdpSocket) -> Vec<u8> {
-    let mut buf: [u8; 1] = [0; 1];
-    println!("Reading data");
-    let result = socket.recv_from(&mut buf);
-    thread::sleep_ms(1000);
-    drop(socket);
-    let mut data;
-    match result {
-        Ok((amt, src)) => {
-            println!("Received data from {}", src);
-            data = Vec::from(&buf[0..amt])
+pub fn read_message(mut stream: &TcpStream) -> String {
+    let cr = 0x0d;
+    let lf = 0x00;
+    let mut line_buffer: Vec<u8> = Vec::new();
+
+    while line_buffer.len() < 2 || (line_buffer[line_buffer.len()-1] != lf && line_buffer[line_buffer.len()-2] != cr) {
+        let byte_buffer: &mut [u8] = &mut [0];
+        match stream.read(byte_buffer) {
+            Ok(_) => {},
+            Err(_) => panic!("Error reading response"),
         }
-        Err(err) => panic!("Read error: {}", err)
-    };
-    data
-}
-
-pub fn send_message(send_addr: SocketAddr, target: SocketAddr, data: Vec<u8>) {
-    let socket = socket(send_addr);
-    println!("Sending data");
-    let result = socket.send_to(&data, target);
-    drop(socket);
-    match result {
-        Ok(amt) => println!("Sent {} bytes", amt),
-        Err(err) => panic!("Socket write error: {}", err),
+        line_buffer.push(byte_buffer[0]);
     }
+    let response = String::from_utf8(line_buffer).unwrap();
+    let chars_to_trim: &[char] = &['\r', '\n'];
+    response.trim_matches(chars_to_trim).to_string()
 }
 
-pub fn listen(listen_on: SocketAddr) -> thread::JoinHandle<Vec<u8>> {
-    let socket = socket(listen_on);
-    let handle =  thread::spawn(move || {
-        read_message(socket)
-    });
-    handle
+pub fn connect(target: SocketAddr) -> TcpStream {
+    let socket = match TcpStream::connect(target) {
+        Ok(s) => s,
+        Err(err) => panic!("Could not bind: {}", err),
+    };
+    socket
+}
+
+
+pub fn send_message(socket: &mut TcpStream, data: &[u8]) {
+    match socket.write_all(&data) {
+        Ok(res) => res,
+        Err(err) => panic!("{:?}", err),
+    };
 }
 
 pub fn string_to_addr(host: String, port: String) -> SocketAddr {
     let addr = match format!("{}:{}",host, port).parse::<SocketAddr>() {
         Ok(res) => res,
-        Err(err) => panic!("Not a valid address")
-     };
-     addr
-}
-
-fn socket(listen_on: SocketAddr) -> UdpSocket {
-    let socket = match UdpSocket::bind(listen_on)  {
-        Ok(socket) => { println!("Socket bound");
-            socket },
-        Err(err) => panic!("Could not bind: {}", err),
+        Err(err) => panic!("Not a valid address {:?}", err)
     };
-    socket
+    addr
 }
