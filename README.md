@@ -6,7 +6,6 @@ Implemented according RFC 959.
 ## TODO
 
 - [x] Basic TCP command connection
-- [ ] BUG, flushing socket data
 - [ ] FTP server domain resolve
 - [ ] get/put UDP transaction
 
