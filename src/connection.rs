@@ -2,14 +2,14 @@ use std::net::{SocketAddr, TcpStream};
 use std::io::{Read, Write};
 use std::str::from_utf8;
 
-pub fn read_message(mut stream: &TcpStream) -> String {
+pub fn read_message(mut socket: &TcpStream) -> String {
     let cr = 0x0d;
     let lf = 0x00;
     let mut line_buffer: Vec<u8> = Vec::new();
 
     while line_buffer.len() < 2 || (line_buffer[line_buffer.len()-1] != lf && line_buffer[line_buffer.len()-2] != cr) {
         let byte_buffer: &mut [u8] = &mut [0];
-        match stream.read(byte_buffer) {
+        match socket.read(byte_buffer) {
             Ok(_) => {},
             Err(_) => panic!("Error reading response"),
         }
@@ -29,7 +29,7 @@ pub fn connect(target: SocketAddr) -> TcpStream {
 }
 
 
-pub fn send_message(socket: &mut TcpStream, data: &[u8]) {
+pub fn send_message(socket: &mut TcpStream, data: Vec<u8>) {
     match socket.write_all(&data) {
         Ok(res) => res,
         Err(err) => panic!("{:?}", err),
