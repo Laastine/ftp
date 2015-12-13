@@ -1,7 +1,7 @@
 use std::env::Args;
 use std::env;
 use std::net::{SocketAddr, TcpStream};
-use std::io;
+use std::io::{self, Write};
 use std::convert::AsRef;
 
 mod connection;
@@ -11,8 +11,8 @@ fn main() {
     let to_addr = parse_cmd_args(env::args());
     let mut socket = connection::connect(to_addr);
     loop {
+        connection::read_message(&socket, &"220".to_string());
         read_cmd_input(&mut socket);
-        println!("{:?}", connection::read_message(&socket));
     }
 }
 
@@ -33,6 +33,8 @@ fn parse_cmd_args(args: Args) -> SocketAddr {
 }
 
 fn read_cmd_input(socket: &mut TcpStream) {
+    print!("ftp>");
+    io::stdout().flush().unwrap();
     let stdin = io::stdin();
     let mut input = String::new();
     stdin.read_line(&mut input).unwrap();
