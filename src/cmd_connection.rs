@@ -4,6 +4,5 @@ use connection;
 
 pub fn command(socket: &mut TcpStream, command: String) {
 	connection::send_message(socket, command.into_bytes().to_vec());
-	let ans = connection::read_message(&socket, &"220".to_string());
-	println!("{:?}", ans);
+	connection::read_message(&socket, &"220".to_string());
 }

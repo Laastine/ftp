@@ -10,7 +10,7 @@ pub fn read_message(mut socket: &TcpStream, expected_code: &String) {
 
     while return_code.to_string() == expected_code.to_string() {
         let mut line_buffer: Vec<u8> = Vec::new();
-        while line_buffer.len() < 2 || (line_buffer[line_buffer.len()-1] != lf && line_buffer[line_buffer.len()-2] != cr) {
+        while line_buffer.len() < 2 || (line_buffer[line_buffer.len()-2] != cr && line_buffer[line_buffer.len()-1] != lf) {
             let byte_buffer: &mut [u8] = &mut [0];
             match socket.read(byte_buffer) {
                 Ok(_) => {},
@@ -21,7 +21,7 @@ pub fn read_message(mut socket: &TcpStream, expected_code: &String) {
         let response = String::from_utf8(line_buffer).unwrap();
         let chars_to_trim: &[char] = &['\r', '\n'];
         trimmed_response = response.trim_matches(chars_to_trim).to_string();
-        println!("{:?}", trimmed_response);
+        println!("{}", trimmed_response);
         let trimmed_response_vec: Vec<char> = trimmed_response.chars().collect();
         
         if trimmed_response_vec[3] == ' ' {
@@ -40,7 +40,6 @@ pub fn connect(target: SocketAddr) -> TcpStream {
     };
     socket
 }
-
 
 pub fn send_message(socket: &mut TcpStream, data: Vec<u8>) {
     match socket.write_all(&data) {

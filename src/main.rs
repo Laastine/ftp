@@ -10,8 +10,11 @@ mod cmd_connection;
 fn main() {
     let to_addr = parse_cmd_args(env::args());
     let mut socket = connection::connect(to_addr);
+    connection::read_message(&socket, &"220".to_string());
+    read_username(&mut socket);
+    read_password(&mut socket);
+
     loop {
-        connection::read_message(&socket, &"220".to_string());
         read_cmd_input(&mut socket);
     }
 }
@@ -32,8 +35,28 @@ fn parse_cmd_args(args: Args) -> SocketAddr {
     connection::string_to_addr(host.to_string(), port.to_string())
 }
 
+fn read_username(socket: &mut TcpStream) {
+    let mut input = String::new();
+    print!("username: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut input).unwrap();
+    let message = "USER ".to_string() + &input;
+    connection::send_message(socket, message.into_bytes().to_vec());
+    connection::read_message(&socket, &"331".to_string());
+}
+
+fn read_password(socket: &mut TcpStream) {
+    let mut input = String::new();
+    print!("password: ");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut input).unwrap();
+    let message = "PASS ".to_string() + &input;
+    connection::send_message(socket, message.into_bytes().to_vec());
+    connection::read_message(&socket, &"230".to_string());
+}
+
 fn read_cmd_input(socket: &mut TcpStream) {
-    print!("ftp>");
+    print!("ftp> ");
     io::stdout().flush().unwrap();
     let stdin = io::stdin();
     let mut input = String::new();
@@ -55,5 +78,6 @@ fn read_cmd_input(socket: &mut TcpStream) {
         "quit" => cmd_connection::command(socket, "quit".to_string()),
         _ => println!("unknown command"),
     };
+    println!("end of cmd input");
 }
 
