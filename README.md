@@ -8,6 +8,7 @@ Implemented according RFC 959.
 - [x] Basic TCP command connection
 - [x] Login
 - [ ] Commands ls, status, cd, help, active, passive, binary, ascii, system, status, quit
+- [ ] Error handling
 - [ ] FTP server domain resolve
 - [ ] get/put UDP transaction
 
