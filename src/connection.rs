@@ -5,10 +5,9 @@ use std::str::{FromStr, from_utf8};
 pub fn read_message(mut socket: &TcpStream, expected_code: &String) {
     let cr = 0x0d;
     let lf = 0x00;
-    let mut return_code = expected_code;
     let mut trimmed_response = String::new();
 
-    while return_code.to_string() == expected_code.to_string() {
+    loop {
         let mut line_buffer: Vec<u8> = Vec::new();
         while line_buffer.len() < 2 || (line_buffer[line_buffer.len()-2] != cr && line_buffer[line_buffer.len()-1] != lf) {
             let byte_buffer: &mut [u8] = &mut [0];
@@ -28,7 +27,6 @@ pub fn read_message(mut socket: &TcpStream, expected_code: &String) {
             break;
         } else {
             let v: Vec<&str> = trimmed_response.splitn(2, ' ').collect();
-            let return_code = &v[0].to_string();
         }
     }
 }
