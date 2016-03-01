@@ -7,9 +7,10 @@ Implemented according RFC 959.
 
 - [x] Basic TCP command connection
 - [x] Login
+- [x] pwd command
+- [ ] cd command
 - [ ] ls command
 - [ ] status command
-- [ ] cd command
 - [ ] help command
 - [ ] active command
 - [ ] passive command
