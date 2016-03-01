@@ -5,7 +5,6 @@ use std::io::{self, Write};
 use std::convert::AsRef;
 
 mod connection;
-mod cmd_connection;
 
 fn main() {
     let to_addr = parse_cmd_args(env::args());
@@ -63,21 +62,24 @@ fn read_cmd_input(socket: &mut TcpStream) {
     stdin.read_line(&mut input).unwrap();
     match input.trim().as_ref() {
         "open" => println!("Not implemented"),
-        "cd" => cmd_connection::command(socket, "cd".to_string()),
+        "cd" => println!("Not implemented"),
+        "pwd" => {
+            connection::send_message(socket, "PWD\r\n".to_string().into_bytes().to_vec());
+            connection::read_message(&socket, &"257".to_string());
+        },
         "close" => println!("Not implemented"),
         "active" => println!("Not implemented"),
         "passive" => println!("Not implemented"),
         "get" => println!("Not implemented"),
         "put" => println!("Not implemented"),
-        "ls" => cmd_connection::command(socket, "LIST -l\r\n".to_string()),
-        "ascii" => cmd_connection::command(socket, "ascii".to_string()),
-        "binary" => cmd_connection::command(socket, "binary".to_string()),
-        "system" => cmd_connection::command(socket, "system".to_string()),
-        "status" => cmd_connection::command(socket, "STAT\r\n".to_string()),
-        "help" => cmd_connection::command(socket, "HELP\r\n".to_string()),
-        "quit" => cmd_connection::command(socket, "quit".to_string()),
+        "ls" => println!("Not implemented"),
+        "ascii" => println!("Not implemented"),
+        "binary" => println!("Not implemented"),
+        "system" => println!("Not implemented"),
+        "status" => println!("Not implemented"),
+        "help" => println!("Not implemented"),
+        "quit" => println!("Not implemented"),
         _ => println!("unknown command"),
     };
-    println!("end of cmd input");
 }
 
