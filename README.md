@@ -8,7 +8,7 @@ Implemented according RFC 959.
 - [x] Basic TCP command connection
 - [x] Login
 - [x] pwd command
-- [ ] cd command
+- [x] cd command
 - [ ] ls command
 - [ ] status command
 - [ ] help command

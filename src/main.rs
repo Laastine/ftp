@@ -60,9 +60,13 @@ fn read_cmd_input(socket: &mut TcpStream) {
     let stdin = io::stdin();
     let mut input = String::new();
     stdin.read_line(&mut input).unwrap();
-    match input.trim().as_ref() {
+    let args: Vec<&str> = input.split_whitespace().collect();
+    match args[0].as_ref() {
         "open" => println!("Not implemented"),
-        "cd" => println!("Not implemented"),
+        "cd" => {
+            connection::send_message(socket, format!("CWD {}\r\n", args[1]).to_string().into_bytes().to_vec());
+            connection::read_message(&socket, &"250".to_string());
+        },
         "pwd" => {
             connection::send_message(socket, "PWD\r\n".to_string().into_bytes().to_vec());
             connection::read_message(&socket, &"257".to_string());
