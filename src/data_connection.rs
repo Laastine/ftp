@@ -1,47 +1,27 @@
-use std::net::UdpSocket;
-use std::net::SocketAddr;
-use std::thread;
+use std::net::{TcpListener, TcpStream};
 
-fn read_message(socket: UdpSocket) -> Vec<u8> {
-	let mut buf: [u8; 1] = [0; 1];
-	println!("Reading data");
-	let result = socket.recv_from(&mut buf);
-	thread::sleep_ms(1000);
-	drop(socket);
-	let mut data;
-	match result {
-		Ok((amt, src)) => {
-			println!("Received data from {}", src);
-			data = Vec::from(&buf[0..amt])
-		}
-		Err(err) => panic!("Read error: {}", err)
-	};
-	data
+let listener = TcpListener::bind("127.0.0.1:3333").unwrap();
+
+fn send_port_cmd() {
+
 }
 
-pub fn send_message(send_addr: SocketAddr, target: SocketAddr, data: Vec<u8>) {
-	let socket = socket(send_addr);
-	println!("Sending data");
-	let result = socket.send_to(&data, target);
-	drop(socket);
-	match result {
-		Ok(amt) => println!("Sent {} bytes", amt),
-		Err(err) => panic!("Socket write error: {}", err),
-	}
+fn handle_client(stream: TcpStream) {
+
 }
 
-pub fn listen(listen_on: SocketAddr) -> thread::JoinHandle<Vec<u8>> {
-	let socket = socket(listen_on);
-	let handle =  thread::spawn(move || {
-		read_message(socket)
-	});
-	handle
+// accept connections and process them, spawning a new thread for each one
+for stream in listener.incoming() {
+    match stream {
+        Ok(stream) => {
+            thread::spawn(move|| {
+                handle_client(stream)
+            });
+        }
+        Err(e) => {
+        	println!("Error while handling data connection {}", e);
+        }
+    }
 }
 
-pub fn string_to_addr(host: String, port: String) -> SocketAddr {
-	let addr = match format!("{}:{}",host, port).parse::<SocketAddr>() {
-		Ok(res) => res,
-		Err(err) => panic!("Not a valid address")
-	};
-	addr
-}
+drop(listener);

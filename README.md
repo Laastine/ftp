@@ -5,10 +5,11 @@ Implemented according RFC 959.
 
 ## TODO
 
-- [x] Basic TCP command connection
+- [x] Open command connection
 - [x] Login
 - [x] pwd command
 - [x] cd command
+- [ ] Open data connection
 - [ ] ls command
 - [ ] status command
 - [ ] help command
