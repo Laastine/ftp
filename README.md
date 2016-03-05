@@ -3,6 +3,8 @@
 Hobby project to learn Rust.
 Implemented according RFC 959.
 
+Tested with Rust 1.7.
+
 ## TODO
 
 - [x] Open command connection
