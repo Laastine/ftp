@@ -80,8 +80,14 @@ fn read_cmd_input(socket: &mut TcpStream) {
       },
       "ascii" => println!("Not implemented"),
       "binary" => println!("Not implemented"),
-      "system" => println!("Not implemented"),
-      "status" => println!("Not implemented"),
+      "system" => {
+        connection::send_message(socket, "SYST\r\n".to_string().into_bytes().to_vec());
+        connection::read_message(&socket, &"215");
+      },
+      "status" => {
+        connection::send_message(socket, "STAT\r\n".to_string().into_bytes().to_vec());
+        connection::read_message(&socket, &"");
+      },
       "help" => println!("Not implemented"),
       "quit" => println!("Not implemented"),
       _ => println!("unknown command"),
