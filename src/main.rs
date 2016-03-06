@@ -11,7 +11,7 @@ fn main() {
   let port = parse_cmd_arg(&mut env::args(), "p");
   let addr = connection::string_to_addr(host, port);
   let mut socket = connection::connect(addr);
-  connection::read_message(&socket, &"220");
+  connection::read_message(&socket);
   read_username(&mut socket);
   read_password(&mut socket);
 
@@ -36,7 +36,7 @@ fn read_username(socket: &mut TcpStream) {
   io::stdin().read_line(&mut input).unwrap();
   let message = "USER ".to_string() + &input;
   connection::send_message(socket, message.into_bytes().to_vec());
-  connection::read_message(&socket, &"331");
+  connection::read_message(&socket);
 }
 
 fn read_password(socket: &mut TcpStream) {
@@ -46,7 +46,7 @@ fn read_password(socket: &mut TcpStream) {
   io::stdin().read_line(&mut input).unwrap();
   let message = "PASS ".to_string() + &input;
   connection::send_message(socket, message.into_bytes().to_vec());
-  connection::read_message(&socket, &"230");
+  connection::read_message(&socket);
 }
 
 fn read_cmd_input(socket: &mut TcpStream) {
@@ -60,11 +60,11 @@ fn read_cmd_input(socket: &mut TcpStream) {
     "open" => println!("Not implemented"),
     "cd" => {
       connection::send_message(socket, format!("CWD {}\r\n", args[1]).to_string().into_bytes().to_vec());
-      connection::read_message(&socket, &"250");
+      connection::read_message(&socket);
     },
     "pwd" => {
       connection::send_message(socket, "PWD\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket, &"257");
+      connection::read_message(&socket);
     },
     "close" => println!("Not implemented"),
     "active" => {
@@ -82,11 +82,11 @@ fn read_cmd_input(socket: &mut TcpStream) {
     "binary" => println!("Not implemented"),
     "system" => {
       connection::send_message(socket, "SYST\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket, &"215");
+      connection::read_message(&socket);
     },
     "status" => {
       connection::send_message(socket, "STAT\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket, &"");
+      connection::read_message(&socket);
     },
     "help" => println!("Not implemented"),
     "quit" => println!("Not implemented"),

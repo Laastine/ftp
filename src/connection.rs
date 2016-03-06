@@ -1,14 +1,7 @@
 use std::net::{SocketAddr, TcpStream};
 use std::io::{Read, Write};
 
-macro_rules! scan {
-  ( $string:expr, $sep:expr, $( $x:ty ),+ ) => {{
-    let mut iter = $string.split($sep);
-    ($(iter.next().and_then(|word| word.parse::<$x>().ok()),)*)
-  }}
-}
-
-pub fn read_message(mut socket: &TcpStream, expected_code: &str) -> String {
+pub fn read_message(mut socket: &TcpStream) -> String {
   let cr = 0x0d;
   let lf = 0x00;
   let mut trimmed_response_vec: Vec<char> ;
@@ -60,11 +53,11 @@ pub fn string_to_addr(host: String, port: String) -> SocketAddr {
 pub fn set_state(socket: &mut TcpStream, is_active: bool) {
   if is_active == true {
     send_message(socket, "PORT 127.0.0.1,41,41\r\n".to_string().into_bytes().to_vec());
-    let res = read_message(&socket, &"227");
+    let res = read_message(&socket);
     println!("res {:?}", res);
   } else {
     send_message(socket, "PASV\r\n".to_string().into_bytes().to_vec());
-    let res = read_message(&socket, &"227");
+    let res = read_message(&socket);
     println!("res {:?}", res);
   }
 }
