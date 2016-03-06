@@ -11,15 +11,15 @@ Tested with Rust 1.7.
 - [x] Login
 - [x] pwd command
 - [x] cd command
-- [ ] Open data connection
+- [x] system command
+- [x] status command
+- [x] active command
+- [x] passive command
+- [ ] Open data connection (active/passive)
 - [ ] ls command
-- [ ] status command
 - [ ] help command
-- [ ] active command
-- [ ] passive command
 - [ ] binary command
 - [ ] ascii command
-- [ ] system command
 - [ ] status command
 - [ ] quit command
 - [ ] Error handling
