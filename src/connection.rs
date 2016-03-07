@@ -1,5 +1,8 @@
+
 use std::net::{SocketAddr, TcpStream};
 use std::io::{Read, Write};
+
+use regex::Regex;
 
 pub fn read_message(mut socket: &TcpStream) -> String {
   let cr = 0x0d;
@@ -52,12 +55,23 @@ pub fn string_to_addr(host: String, port: String) -> SocketAddr {
 
 pub fn set_state(socket: &mut TcpStream, is_active: bool) {
   if is_active == true {
-    send_message(socket, "PORT 127.0.0.1,41,41\r\n".to_string().into_bytes().to_vec());
+    send_message(socket, "PORT 127.0.0.1,64,05\r\n".to_string().into_bytes().to_vec());
     let res = read_message(&socket);
-    println!("res {:?}", res);
   } else {
     send_message(socket, "PASV\r\n".to_string().into_bytes().to_vec());
     let res = read_message(&socket);
-    println!("res {:?}", res);
+    let re = Regex::new(r"(?x)
+      (?P<code>\d{3})             # code
+      [A-Za-z\s]{23}\(
+      (?P<ip>(([\d,]{2,4}){4}?))  # server IP
+      (?P<foctet>[\d]{1,3}?)      # port first octet
+      ,
+      (?P<soctet>[\d]{1,3}?)      # port second octet
+      \)").unwrap();
+
+    let caps = re.captures(res.as_str()).unwrap();
+    let server_ip = caps.name("ip").unwrap();
+    let first_octet = caps.name("foctet").unwrap();
+    let second_octet = caps.name("soctet").unwrap();
   }
 }

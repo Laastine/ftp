@@ -1,3 +1,5 @@
+extern crate regex;
+
 use std::env::Args;
 use std::env;
 use std::net::{TcpStream};
@@ -76,7 +78,7 @@ fn read_cmd_input(socket: &mut TcpStream) {
     "get" => println!("Not implemented"),
     "put" => println!("Not implemented"),
     "ls" => {
-
+      println!("Not implemented")
     },
     "ascii" => println!("Not implemented"),
     "binary" => println!("Not implemented"),
