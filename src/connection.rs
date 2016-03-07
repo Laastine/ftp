@@ -70,8 +70,9 @@ pub fn set_state(socket: &mut TcpStream, is_active: bool) {
       \)").unwrap();
 
     let caps = re.captures(res.as_str()).unwrap();
-    let server_ip = caps.name("ip").unwrap();
-    let first_octet = caps.name("foctet").unwrap();
-    let second_octet = caps.name("soctet").unwrap();
+    let mut server_ip: String = caps.name("ip").unwrap().split(",").map(|x| format!("{}{}", x, ".")).collect();
+    server_ip.pop();
+    let port = caps.name("foctet").unwrap().parse::<u32>().unwrap() * 256 + caps.name("soctet").unwrap().parse::<u32>().unwrap();
+    println!("{}:{}", server_ip, port);
   }
 }
