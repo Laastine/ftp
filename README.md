@@ -24,7 +24,7 @@ Tested with Rust 1.7.
 - [ ] quit command
 - [ ] Error handling
 - [ ] FTP server domain resolve
-- [ ] get/put UDP transaction
+- [ ] get/put file download/upload
 
 ## Build
 ```
