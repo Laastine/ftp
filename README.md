@@ -13,8 +13,9 @@ Tested with Rust 1.7.
 - [x] cd command
 - [x] system command
 - [x] status command
-- [x] active command
+- [x] port command
 - [x] passive command
+- [ ] Resolve hostname
 - [ ] Open data connection (active/passive)
 - [ ] ls command
 - [ ] help command

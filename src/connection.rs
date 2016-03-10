@@ -1,5 +1,5 @@
 
-use std::net::{SocketAddr, TcpStream};
+use std::net::{SocketAddr, TcpStream, TcpListener};
 use std::io::{Read, Write};
 
 use regex::Regex;
@@ -53,10 +53,25 @@ pub fn string_to_addr(host: String, port: String) -> SocketAddr {
   addr
 }
 
+fn init_data_socket() -> (TcpListener, (u16, u16)) {
+  let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+  let local_addr = listener.local_addr().unwrap();
+  let port = local_addr.port();
+  let firt_octet = port >> 8;
+  let second_octet = port & 0xff;
+  (listener, (firt_octet, second_octet))
+}
+
 pub fn set_state(socket: &mut TcpStream, is_active: bool) {
   if is_active == true {
-    send_message(socket, "PORT 127.0.0.1,64,05\r\n".to_string().into_bytes().to_vec());
+    let data_sock = init_data_socket();
+
+    let port_cmd = format!("PORT 127,0,0,1,{},{}\r\n", (data_sock.1).0, (data_sock.1).1);
+    send_message(socket, port_cmd.into_bytes().to_vec());
     let res = read_message(&socket);
+    println!("res {:?}", res);
+
+
   } else {
     send_message(socket, "PASV\r\n".to_string().into_bytes().to_vec());
     let res = read_message(&socket);
