@@ -71,7 +71,7 @@ fn read_cmd_input(socket: &mut TcpStream) {
     "close" => println!("Not implemented"),
     "active" => println!("Not implemented"),
     "passive" => {
-      let data_socket = connection::set_passive(socket);
+      connection::set_passive(socket);
     },
     "get" => println!("Not implemented"),
     "put" => println!("Not implemented"),
@@ -80,6 +80,7 @@ fn read_cmd_input(socket: &mut TcpStream) {
       connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
       connection::recv_unknown(&data_socket);
+      connection::read_message(&socket);
     },
     "ascii" => println!("Not implemented"),
     "binary" => println!("Not implemented"),
