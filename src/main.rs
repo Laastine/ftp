@@ -79,7 +79,7 @@ fn read_cmd_input(socket: &mut TcpStream) {
       let data_socket = connection::set_passive(socket);
       connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
-      connection::read_message(&data_socket);
+      connection::recv_unknown(&data_socket);
     },
     "ascii" => println!("Not implemented"),
     "binary" => println!("Not implemented"),

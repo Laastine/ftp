@@ -30,6 +30,21 @@ pub fn read_message(mut socket: &TcpStream) -> String {
   trimmed_response_vec.iter().cloned().collect::<String>()
 }
 
+pub fn recv_unknown(mut data_socket: &TcpStream) {
+  let mut line_buffer: Vec<u8> = Vec::new();
+  while line_buffer.len() < 1 || (line_buffer[line_buffer.len()-1] != 0) {
+    let byte_buffer: &mut [u8] = &mut [0];
+    match data_socket.read(byte_buffer) {
+      Ok(_) => {},
+      Err(_) => panic!("Error reading response"),
+    }
+    line_buffer.push(byte_buffer[0]);
+  }
+  let response = String::from_utf8(line_buffer).unwrap();
+  let chars_to_trim: &[char] = &['\r', '\n'];
+  println!("{}", response.trim_matches(chars_to_trim).to_string());  
+}
+
 pub fn connect(target: SocketAddr) -> TcpStream {
   let socket = match TcpStream::connect(target) {
     Ok(s) => s,
