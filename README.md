@@ -15,16 +15,16 @@ Tested with Rust 1.7.
 - [x] status command
 - [x] port command
 - [x] passive command
+- [x] Open passive data connection
+- [x] ls command
 - [ ] Resolve hostname
-- [ ] Open data connection (active/passive)
-- [ ] ls command
+- [ ] Open active data connection
 - [ ] help command
 - [ ] binary command
 - [ ] ascii command
 - [ ] status command
 - [ ] quit command
 - [ ] Error handling
-- [ ] FTP server domain resolve
 - [ ] get/put file download/upload
 
 ## Build
