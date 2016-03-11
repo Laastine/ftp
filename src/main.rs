@@ -69,16 +69,17 @@ fn read_cmd_input(socket: &mut TcpStream) {
       connection::read_message(&socket);
     },
     "close" => println!("Not implemented"),
-    "active" => {
-      connection::set_state(socket, true);
-    },
+    "active" => println!("Not implemented"),
     "passive" => {
-      connection::set_state(socket, false);
+      let data_socket = connection::set_passive(socket);
     },
     "get" => println!("Not implemented"),
     "put" => println!("Not implemented"),
     "ls" => {
-      println!("Not implemented")
+      let data_socket = connection::set_passive(socket);
+      connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
+      connection::read_message(&socket);
+      connection::read_message(&data_socket);
     },
     "ascii" => println!("Not implemented"),
     "binary" => println!("Not implemented"),

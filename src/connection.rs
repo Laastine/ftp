@@ -33,7 +33,7 @@ pub fn read_message(mut socket: &TcpStream) -> String {
 pub fn connect(target: SocketAddr) -> TcpStream {
   let socket = match TcpStream::connect(target) {
     Ok(s) => s,
-    Err(err) => panic!("Could not bind: {}", err),
+    Err(err) => panic!("Couldn't bind: {}", err),
   };
   socket
 }
@@ -62,32 +62,38 @@ fn init_data_socket() -> (TcpListener, (u16, u16)) {
   (listener, (firt_octet, second_octet))
 }
 
-pub fn set_state(socket: &mut TcpStream, is_active: bool) {
-  if is_active == true {
-    let data_sock = init_data_socket();
+pub fn set_passive(socket: &mut TcpStream) -> TcpStream {
+  send_message(socket, "PASV\r\n".to_string().into_bytes().to_vec());
+  let res = read_message(&socket);
+  let re = Regex::new(r"(?x)
+    (?P<code>\d{3})             # code
+    [A-Za-z\s]{23}\(
+    (?P<ip1>([\d,]{1,3})?)  # server IP
+    ,
+    (?P<ip2>([\d]{1,3})?)  # server IP
+    ,
+    (?P<ip3>([\d]{1,3})?)  # server IP
+    ,
+    (?P<ip4>([\d]{1,3})?)  # server IP
+    ,
+    (?P<foctet>[\d]{1,3}?)      # port first octet
+    ,
+    (?P<soctet>[\d]{1,3}?)      # port second octet
+    \)").unwrap();
 
-    let port_cmd = format!("PORT 127,0,0,1,{},{}\r\n", (data_sock.1).0, (data_sock.1).1);
-    send_message(socket, port_cmd.into_bytes().to_vec());
-    let res = read_message(&socket);
-    println!("res {:?}", res);
-
-
-  } else {
-    send_message(socket, "PASV\r\n".to_string().into_bytes().to_vec());
-    let res = read_message(&socket);
-    let re = Regex::new(r"(?x)
-      (?P<code>\d{3})             # code
-      [A-Za-z\s]{23}\(
-      (?P<ip>(([\d,]{2,4}){4}?))  # server IP
-      (?P<foctet>[\d]{1,3}?)      # port first octet
-      ,
-      (?P<soctet>[\d]{1,3}?)      # port second octet
-      \)").unwrap();
-
-    let caps = re.captures(res.as_str()).unwrap();
-    let mut server_ip: String = caps.name("ip").unwrap().split(",").map(|x| format!("{}{}", x, ".")).collect();
-    server_ip.pop();
-    let port = caps.name("foctet").unwrap().parse::<u32>().unwrap() * 256 + caps.name("soctet").unwrap().parse::<u32>().unwrap();
-    println!("{}:{}", server_ip, port);
+  let caps = re.captures(res.as_str()).unwrap();
+  let server_ip = format!("{}.{}.{}.{}", caps.name("ip1").unwrap(), caps.name("ip2").unwrap(), caps.name("ip3").unwrap(), caps.name("ip4").unwrap()) ;
+  let port = caps.name("foctet").unwrap().parse::<u16>().unwrap() * 256 + caps.name("soctet").unwrap().parse::<u16>().unwrap();
+  match TcpStream::connect((&*server_ip, port)) {
+    Ok(s) => s,
+    Err(err) => panic!("Couldn't bind data connection: {}", err),
   }
+}
+
+pub fn set_active(socket: &mut TcpStream) {
+  let data_sock = init_data_socket();
+  let port_cmd = format!("PORT 127,0,0,1,{},{}\r\n", (data_sock.1).0, (data_sock.1).1);
+  send_message(socket, port_cmd.into_bytes().to_vec());
+  let res = read_message(&socket);
+  println!("res {:?}", res);
 }
