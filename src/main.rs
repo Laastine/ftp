@@ -82,8 +82,14 @@ fn read_cmd_input(socket: &mut TcpStream) {
       connection::recv_unknown(&data_socket);
       connection::read_message(&socket);
     },
-    "ascii" => println!("Not implemented"),
-    "binary" => println!("Not implemented"),
+    "ascii" => {
+      connection::send_message(socket, "TYPE A\r\n".to_string().into_bytes().to_vec());
+      connection::read_message(&socket);
+    },
+    "binary" => {
+      connection::send_message(socket, "TYPE I\r\n".to_string().into_bytes().to_vec());
+      connection::read_message(&socket);
+    },
     "system" => {
       connection::send_message(socket, "SYST\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
@@ -93,7 +99,10 @@ fn read_cmd_input(socket: &mut TcpStream) {
       connection::read_message(&socket);
     },
     "help" => println!("Not implemented"),
-    "quit" => println!("Not implemented"),
+    "logout" => {
+      connection::send_message(socket, "LOGOUT\r\n".to_string().into_bytes().to_vec());
+      connection::read_message(&socket);
+    },
     _ => println!("unknown command"),
   };
 }

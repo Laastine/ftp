@@ -68,15 +68,6 @@ pub fn string_to_addr(host: String, port: String) -> SocketAddr {
   addr
 }
 
-fn init_data_socket() -> (TcpListener, (u16, u16)) {
-  let listener = TcpListener::bind("127.0.0.1:0").unwrap();
-  let local_addr = listener.local_addr().unwrap();
-  let port = local_addr.port();
-  let firt_octet = port >> 8;
-  let second_octet = port & 0xff;
-  (listener, (firt_octet, second_octet))
-}
-
 pub fn set_passive(socket: &mut TcpStream) -> TcpStream {
   send_message(socket, "PASV\r\n".to_string().into_bytes().to_vec());
   let res = read_message(&socket);
@@ -105,10 +96,21 @@ pub fn set_passive(socket: &mut TcpStream) -> TcpStream {
   }
 }
 
+#[allow(dead_code)]
 pub fn set_active(socket: &mut TcpStream) {
   let data_sock = init_data_socket();
   let port_cmd = format!("PORT 127,0,0,1,{},{}\r\n", (data_sock.1).0, (data_sock.1).1);
   send_message(socket, port_cmd.into_bytes().to_vec());
   let res = read_message(&socket);
   println!("res {:?}", res);
+}
+
+#[allow(dead_code)]
+fn init_data_socket() -> (TcpListener, (u16, u16)) {
+  let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+  let local_addr = listener.local_addr().unwrap();
+  let port = local_addr.port();
+  let firt_octet = port >> 8;
+  let second_octet = port & 0xff;
+  (listener, (firt_octet, second_octet))
 }
