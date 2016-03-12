@@ -16,9 +16,10 @@ fn main() {
   connection::read_message(&socket);
   read_username(&mut socket);
   read_password(&mut socket);
+  let mut return_code = 1;
 
-  loop {
-    read_cmd_input(&mut socket);
+  while return_code > 0 {
+    return_code = read_cmd_input(&mut socket);
   }
 }
 
@@ -51,7 +52,7 @@ fn read_password(socket: &mut TcpStream) {
   connection::read_message(&socket);
 }
 
-fn read_cmd_input(socket: &mut TcpStream) {
+fn read_cmd_input(socket: &mut TcpStream) -> i16 {
   print!("ftp> ");
   io::stdout().flush().unwrap();
   let stdin = io::stdin();
@@ -59,51 +60,71 @@ fn read_cmd_input(socket: &mut TcpStream) {
   stdin.read_line(&mut input).unwrap();
   let args: Vec<&str> = input.split_whitespace().collect();
   match args[0].as_ref() {
-    "open" => println!("Not implemented"),
     "cd" => {
       connection::send_message(socket, format!("CWD {}\r\n", args[1]).to_string().into_bytes().to_vec());
       connection::read_message(&socket);
+      1
     },
     "pwd" => {
       connection::send_message(socket, "PWD\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
+      1
     },
-    "close" => println!("Not implemented"),
-    "active" => println!("Not implemented"),
+    "active" => {
+      println!("Not implemented");
+      1
+    },
     "passive" => {
       connection::set_passive(socket);
+      1
     },
-    "get" => println!("Not implemented"),
-    "put" => println!("Not implemented"),
+    "get" => {
+      println!("Not implemented");
+      1
+    },
+    "put" => {
+      println!("Not implemented");
+      1
+    },
     "ls" => {
       let data_socket = connection::set_passive(socket);
       connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
       connection::recv_unknown(&data_socket);
       connection::read_message(&socket);
+      1
     },
     "ascii" => {
       connection::send_message(socket, "TYPE A\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
+      1
     },
     "binary" => {
       connection::send_message(socket, "TYPE I\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
+      1
     },
     "system" => {
       connection::send_message(socket, "SYST\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
+      1
     },
     "status" => {
       connection::send_message(socket, "STAT\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
+      1
     },
-    "help" => println!("Not implemented"),
-    "logout" => {
-      connection::send_message(socket, "LOGOUT\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket);
+    "help" => {
+      println!("Not implemented");
+      1
     },
-    _ => println!("unknown command"),
-  };
+    "quit" => {
+      0
+    },
+    _ => {
+      println!("unknown command");
+      1
+    },
+  }
 }
 
