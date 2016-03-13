@@ -18,14 +18,15 @@ Tested with Rust 1.7.
 - [x] Open passive data connection
 - [x] ls command
 - [x] quit command
+- [x] binary command
+- [x] ascii command
+- [x] status command
+- [x] help
 - [ ] Resolve hostname
 - [ ] Open active data connection
-- [ ] help command
-- [ ] binary command
-- [ ] ascii command
-- [ ] status command
-- [ ] Error handling
-- [ ] get/put file download/upload
+- [ ] Proper error handling
+- [ ] get, file download
+- [ ] put, file upload
 
 ## Build
 ```
