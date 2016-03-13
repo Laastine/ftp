@@ -115,19 +115,10 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       1
     },
     "help" => {
-      println!("cd <dir name> - Enter path");
-      println!("pwd - Get current path");
-      println!("passive - Set passive mode");
-      println!("ls - Show content of current directory");
-      println!("ascii - Set ascii filetransfer mode");
-      println!("binary - Set binary filetransfer mode");
-      println!("system - Get server system info");
-      println!("status - Get server status info");
-      println!("help - Print this message");
-      println!("quit - Exit FTP-client");
-      1
+      connection::print_help_msg()
     },
     "quit" => {
+      println!("Shutting down ftp client");
       0
     },
     _ => {

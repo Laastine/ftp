@@ -96,6 +96,20 @@ pub fn set_passive(socket: &mut TcpStream) -> TcpStream {
   }
 }
 
+pub fn print_help_msg() -> i16 {
+      println!("cd <dir name> - Enter path");
+      println!("pwd - Get current path");
+      println!("passive - Set passive mode");
+      println!("ls - Show content of current directory");
+      println!("ascii - Set ascii filetransfer mode");
+      println!("binary - Set binary filetransfer mode");
+      println!("system - Get server system info");
+      println!("status - Get server status info");
+      println!("help - Print this message");
+      println!("quit - Exit FTP-client");
+      1
+}
+
 #[allow(dead_code)]
 pub fn set_active(socket: &mut TcpStream) {
   let data_sock = init_data_socket();
