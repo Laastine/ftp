@@ -79,7 +79,11 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       1
     },
     "get" => {
-      println!("Not implemented");
+      let data_socket = connection::set_passive(socket);
+      connection::send_message(socket, format!("RETR {}\r\n", args[1]).to_string().into_bytes().to_vec());
+      connection::read_message(&socket);
+      connection::write_data_to_file(&data_socket, args[1].to_string());
+      connection::read_message(&socket);
       1
     },
     "put" => {
@@ -90,7 +94,7 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       let data_socket = connection::set_passive(socket);
       connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
       connection::read_message(&socket);
-      connection::recv_unknown(&data_socket);
+      println!("{}", connection::recv_unknown(&data_socket));
       connection::read_message(&socket);
       1
     },
@@ -117,7 +121,7 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
     "help" => {
       connection::print_help_msg()
     },
-    "quit" => {
+    "logout" => {
       println!("Shutting down ftp client");
       0
     },

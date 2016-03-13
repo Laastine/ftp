@@ -1,6 +1,7 @@
 
 use std::net::{SocketAddr, TcpStream, TcpListener};
-use std::io::{Read, Write};
+use std::io::prelude::{Write, Read};
+use std::fs::File;
 
 use regex::Regex;
 
@@ -30,7 +31,7 @@ pub fn read_message(mut socket: &TcpStream) -> String {
   trimmed_response_vec.iter().cloned().collect::<String>()
 }
 
-pub fn recv_unknown(mut data_socket: &TcpStream) {
+pub fn recv_unknown(mut data_socket: &TcpStream) -> String {
   let mut line_buffer: Vec<u8> = Vec::new();
   while line_buffer.len() < 1 || (line_buffer[line_buffer.len()-1] != 0) {
     let byte_buffer: &mut [u8] = &mut [0];
@@ -42,7 +43,16 @@ pub fn recv_unknown(mut data_socket: &TcpStream) {
   }
   let response = String::from_utf8(line_buffer).unwrap();
   let chars_to_trim: &[char] = &['\r', '\n'];
-  println!("{}", response.trim_matches(chars_to_trim).to_string());  
+  response.trim_matches(chars_to_trim).to_string()
+}
+
+pub fn write_data_to_file(data_socket: &TcpStream, filename: String) {
+  let mut f = File::create(&filename).unwrap();
+  let foo = recv_unknown(data_socket);
+  match f.write_all(&foo.into_bytes().to_vec()) {
+    Ok(_) => {},
+    Err(_) => panic!("Data write error"),
+  };
 }
 
 pub fn connect(target: SocketAddr) -> TcpStream {

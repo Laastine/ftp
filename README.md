@@ -17,15 +17,15 @@ Tested with Rust 1.7.
 - [x] passive command
 - [x] Open passive data connection
 - [x] ls command
-- [x] quit command
+- [x] logout command
 - [x] binary command
 - [x] ascii command
 - [x] status command
 - [x] help
+- [x] get, file download
 - [ ] Resolve hostname
 - [ ] Open active data connection
 - [ ] Proper error handling
-- [ ] get, file download
 - [ ] put, file upload
 
 ## Build
