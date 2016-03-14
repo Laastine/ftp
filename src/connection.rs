@@ -48,11 +48,21 @@ pub fn recv_unknown(mut data_socket: &TcpStream) -> String {
 
 pub fn write_data_to_file(data_socket: &TcpStream, filename: String) {
   let mut f = File::create(&filename).unwrap();
-  let foo = recv_unknown(data_socket);
-  match f.write_all(&foo.into_bytes().to_vec()) {
+  let data = recv_unknown(data_socket);
+  match f.write_all(&data.into_bytes().to_vec()) {
     Ok(_) => {},
     Err(_) => panic!("Data write error"),
   };
+}
+
+pub fn send_data_to_server(data_socket: &mut TcpStream, filename: String) {
+  let mut f = File::open(&filename).unwrap();
+  let mut s = String::new();
+  match f.read_to_string(&mut s) {
+    Ok(_) => {},
+    Err(_) => panic!("Data send error"),
+  }
+  send_message(data_socket, s.into_bytes().to_vec());
 }
 
 pub fn connect(target: SocketAddr) -> TcpStream {
@@ -107,17 +117,17 @@ pub fn set_passive(socket: &mut TcpStream) -> TcpStream {
 }
 
 pub fn print_help_msg() -> i16 {
-      println!("cd <dir name> - Enter path");
-      println!("pwd - Get current path");
-      println!("passive - Set passive mode");
-      println!("ls - Show content of current directory");
-      println!("ascii - Set ascii filetransfer mode");
-      println!("binary - Set binary filetransfer mode");
-      println!("system - Get server system info");
-      println!("status - Get server status info");
-      println!("help - Print this message");
-      println!("quit - Exit FTP-client");
-      1
+  println!("cd <dir name> - Enter path");
+  println!("pwd - Get current path");
+  println!("passive - Set passive mode");
+  println!("ls - Show content of current directory");
+  println!("ascii - Set ascii filetransfer mode");
+  println!("binary - Set binary filetransfer mode");
+  println!("system - Get server system info");
+  println!("status - Get server status info");
+  println!("help - Print this message");
+  println!("quit - Exit FTP-client");
+  1
 }
 
 #[allow(dead_code)]

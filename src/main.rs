@@ -87,7 +87,11 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       1
     },
     "put" => {
-      println!("Not implemented");
+      let mut data_socket = connection::set_passive(socket);
+      connection::send_message(socket, format!("STOR {}\r\n", args[1]).to_string().into_bytes().to_vec());
+      connection::read_message(&socket);
+      connection::send_data_to_server(&mut data_socket, args[1].to_string());
+      connection::read_message(&socket);
       1
     },
     "ls" => {

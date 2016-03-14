@@ -23,10 +23,10 @@ Tested with Rust 1.7.
 - [x] status command
 - [x] help
 - [x] get, file download
-- [ ] Resolve hostname (Currently not possible with standard library)
+- [x] put, file upload
+- [ ] Resolve hostname
 - [ ] Open active data connection
 - [ ] Proper error handling
-- [ ] put, file upload
 
 ## Build
 ```
