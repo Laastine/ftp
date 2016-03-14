@@ -23,7 +23,7 @@ Tested with Rust 1.7.
 - [x] status command
 - [x] help
 - [x] get, file download
-- [ ] Resolve hostname
+- [ ] Resolve hostname (Currently not possible with standard library)
 - [ ] Open active data connection
 - [ ] Proper error handling
 - [ ] put, file upload
@@ -32,11 +32,6 @@ Tested with Rust 1.7.
 ```
 cargo build --release
 ./target/release/ftp h 127.0.0.1 p 3333
-```
-
-### Dummy server
-```
-nc -l 127.0.0.1 3333
 ```
 
 ### Test against real FTP server
