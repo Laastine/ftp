@@ -24,7 +24,7 @@ Tested with Rust 1.7.
 - [x] help
 - [x] get, file download
 - [x] put, file upload
-- [ ] Add download speed indicator
+- [ ] Add download and upload speed indicator
 - [ ] Resolve hostname
 - [ ] Open active data connection
 - [ ] Proper error handling
