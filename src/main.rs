@@ -95,7 +95,11 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
     },
     "ls" => {
       let data_socket = connection::set_passive(socket);
-      connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
+      if args.len() == 2 {
+        connection::send_message(socket, format!("LIST {}\r\n", args[1]).to_string().into_bytes().to_vec());
+      } else {
+        connection::send_message(socket, "LIST\r\n".to_string().into_bytes().to_vec());
+      }
       connection::read_message(&socket);
       println!("{}", connection::recv_unknown(&data_socket));
       connection::read_message(&socket);
