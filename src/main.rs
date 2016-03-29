@@ -66,8 +66,7 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       1
     },
     "pwd" => {
-      connection::send_message(socket, "PWD\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket);
+      run_cmd("PWD", socket);
       1
     },
     "active" => {
@@ -103,23 +102,19 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       1
     },
     "ascii" => {
-      connection::send_message(socket, "TYPE A\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket);
+      run_cmd("TYPE A", socket);
       1
     },
     "binary" => {
-      connection::send_message(socket, "TYPE I\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket);
+      run_cmd("TYPE I", socket);
       1
     },
     "system" => {
-      connection::send_message(socket, "SYST\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket);
+      run_cmd("SYST", socket);
       1
     },
     "status" => {
-      connection::send_message(socket, "STAT\r\n".to_string().into_bytes().to_vec());
-      connection::read_message(&socket);
+      run_cmd("STAT", socket);
       1
     },
     "help" => {
@@ -136,3 +131,8 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
   }
 }
 
+fn run_cmd(cmd: &str, socket: &mut TcpStream) -> u16 {
+  connection::send_message(socket, format!("{}\r\n", cmd).to_string().into_bytes().to_vec());
+  connection::read_message(&socket);
+  1
+}
