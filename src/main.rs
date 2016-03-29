@@ -125,7 +125,8 @@ fn read_cmd_input(socket: &mut TcpStream) -> i16 {
       0
     },
     _ => {
-      println!("unknown command");
+      println!("Unknown command");
+      connection::print_help_msg();
       1
     },
   }
