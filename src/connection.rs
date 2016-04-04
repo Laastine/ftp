@@ -94,13 +94,13 @@ pub fn set_passive(socket: &mut TcpStream) -> TcpStream {
   let re = Regex::new(r"(?x)
     (?P<code>\d{3})             # code
     [A-Za-z\s]{23}\(
-    (?P<ip1>([\d,]{1,3})?)  # server IP
+    (?P<ip1>([\d,]{1,3})?)      # server IP
     ,
-    (?P<ip2>([\d]{1,3})?)  # server IP
+    (?P<ip2>([\d]{1,3})?)       # server IP
     ,
-    (?P<ip3>([\d]{1,3})?)  # server IP
+    (?P<ip3>([\d]{1,3})?)       # server IP
     ,
-    (?P<ip4>([\d]{1,3})?)  # server IP
+    (?P<ip4>([\d]{1,3})?)       # server IP
     ,
     (?P<foctet>[\d]{1,3}?)      # port first octet
     ,
