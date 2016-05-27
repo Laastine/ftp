@@ -126,7 +126,7 @@ pub fn print_help_msg() -> i16 {
   println!("system - Get server system info");
   println!("status - Get server status info");
   println!("help - Print this message");
-  println!("quit - Exit FTP-client");
+  println!("logout - Exit FTP-client");
   1
 }
 
