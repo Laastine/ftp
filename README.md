@@ -3,7 +3,7 @@
 Hobby project to learn Rust.
 Implemented ~according RFC 959.
 
-Tested with Rust 1.8.
+Tested with Rust 1.9.
 
 ## TODO
 
